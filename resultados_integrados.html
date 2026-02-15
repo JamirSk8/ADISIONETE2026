@@ -95,11 +95,11 @@
         let nombreCompleto = (datos['apellidos'] || '') + ' ' + (datos['nombres'] || '');
         if(!nombreCompleto.trim()) nombreCompleto = "No registrado";
         
-        html += `<div style="grid-column: span 2;"><strong>Apellidos y Nombres:</strong> ${nombreCompleto}</div>`;
-        html += `<div><strong>DNI:</strong> ${datos['dni'] || '-'}</div>`;
-        html += `<div><strong>Edad:</strong> ${datos['edad'] || '-'}</div>`;
-        html += `<div><strong>Sexo:</strong> ${datos['sexo'] || '-'}</div>`;
-        html += `<div><strong>Cód. Postulante:</strong> ${datos['codigo_postulante'] || '-'}</div>`;
+        html += `<div style="grid-column: span 2; font-size:14px;"><strong>Apellidos y Nombres:</strong> ${nombreCompleto}</div>`;
+        html += `<div style="font-size:10px;"><strong>DNI:</strong> ${datos['dni'] || '-'}</div>`;
+        html += `<div style="font-size:10px;"><strong>Edad:</strong> ${datos['edad'] || '-'}</div>`;
+        html += `<div style="font-size:14px;"><strong>Sexo:</strong> ${datos['sexo'] || '-'}</div>`;
+        html += `<div style="font-size:14px;"><strong>Cód. Postulante:</strong> ${datos['codigo_postulante'] || '-'}</div>`;
         
         html += '</div>';
         document.getElementById('datosPostulante').innerHTML = html;
