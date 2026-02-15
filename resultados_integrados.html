@@ -42,12 +42,10 @@
             <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
         </div>
 
-        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin:10px 0;" class="no-print">
-            <button class="btn" style="background:#218838;padding:8px 16px;" onclick="descargarResultadosPDF()">💾 Descargar PDF</button>
-            <div style="display:flex;gap:10px;">
-                <button class="btn" style="background:#555;padding:8px 16px;" onclick="window.print()">🖨️ Imprimir PDF</button>
-                <button class="btn" style="background:#b30000;margin-top:0;padding:8px 16px;" onclick="limpiarResultados()">Limpiar resultados</button>
-            </div>
+        <div style="width:100%;display:flex;justify-content:center;align-items:center;gap:15px;margin:15px 0;flex-wrap:wrap;" class="no-print">
+            <button class="btn" style="background:#218838;padding:10px 20px;font-size:1.05rem;font-weight:bold;" onclick="descargarResultadosPDF()"><strong>💾 DESCARGAR RESULTADOS</strong></button>
+            <button class="btn" style="background:#555;padding:10px 20px;font-size:1.05rem;" onclick="window.print()">🖨️ Imprimir</button>
+            <button class="btn" style="background:#b30000;padding:10px 20px;font-size:1.05rem;" onclick="limpiarResultados()">🗑️ Limpiar</button>
         </div>
 
         <div class="results-container">
@@ -217,10 +215,13 @@
                 datos = JSON.parse(localStorage.getItem('datosGenerales'));
             }
             
-            let apellidos = (datos['apellidos'] || 'Resultados').toUpperCase();
-            let nombreArchivo = `Informe_${apellidos}_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`;
+            let apellidos = (datos['apellidos'] || 'Resultados').toUpperCase().replace(/[\s\/\\:*?"<>|]/g, '_');
+            let nombreArchivo = `Informe_Psicologico_${apellidos}_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`;
             
-            // Obtener el elemento a convertir
+            // Mostrar mensaje de proceso
+            alert('Generando PDF... por favor espera.');
+            
+            // Obtener el elemento a convertir (excluir botones)
             const element = document.querySelector('.results-container');
             
             // Crear canvas desde HTML
@@ -228,7 +229,8 @@
                 scale: 2,
                 allowTaint: true,
                 useCORS: true,
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                logging: false
             });
             
             // Obtener dimensiones
@@ -236,8 +238,10 @@
             const pageHeight = 295; // A4 height in mm
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
-            // Crear PDF
+            // Crear PDF con jsPDF
+            const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
+            
             let heightLeft = imgHeight;
             let position = 0;
             
@@ -253,12 +257,13 @@
                 }
             }
             
-            // Descargar
+            // Descargar PDF
             pdf.save(nombreArchivo);
+            alert('✓ PDF descargado correctamente: ' + nombreArchivo);
             
         } catch(e) {
             console.error("Error al generar PDF:", e);
-            alert("Error al generar el PDF. Intenta usar 'Imprimir PDF' en su lugar.");
+            alert("⚠️ Error al generar el PDF.\n\nAlternativa: usa 'Imprimir' y guarda como PDF desde tu navegador.");
         }
     }
     </script>
