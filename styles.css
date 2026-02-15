@@ -111,14 +111,16 @@ body > .header-bar {
 }
 
 .logo-img {
-    height: 60px;
-    width: 60px;
+    height: 80px;
+    width: 80px;
     background: #fff;
     border-radius: 50%;
-    box-shadow: 0 2px 8px #2222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     object-fit: contain;
-    margin: 0 18px;
-    border: 2.5px solid #098447;
+    margin: 0 25px;
+    border: 3px solid #098447;
+    padding: 8px;
+    box-sizing: border-box;
 }
 
 /* Form Elements */
