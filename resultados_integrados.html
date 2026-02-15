@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @media print {
             .result-section {
@@ -41,8 +43,11 @@
         </div>
 
         <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin:10px 0;" class="no-print">
-            <button class="btn" style="background:#555;padding:8px 16px;" onclick="window.print()">🖨️ Imprimir PDF</button>
-            <button class="btn" style="background:#b30000;margin-top:0;padding:8px 16px;" onclick="limpiarResultados()">Limpiar resultados</button>
+            <button class="btn" style="background:#218838;padding:8px 16px;" onclick="descargarResultadosPDF()">💾 Descargar PDF</button>
+            <div style="display:flex;gap:10px;">
+                <button class="btn" style="background:#555;padding:8px 16px;" onclick="window.print()">🖨️ Imprimir PDF</button>
+                <button class="btn" style="background:#b30000;margin-top:0;padding:8px 16px;" onclick="limpiarResultados()">Limpiar resultados</button>
+            </div>
         </div>
 
         <div class="results-container">
@@ -201,6 +206,59 @@
         if(confirm("¿Estás seguro de borrar todos los resultados almacenados?")) {
             localStorage.clear();
             location.reload();
+        }
+    }
+
+    async function descargarResultadosPDF() {
+        try {
+            // Obtener datos del alumno
+            let datos = {};
+            if(localStorage.getItem('datosGenerales')) {
+                datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            }
+            
+            let apellidos = (datos['apellidos'] || 'Resultados').toUpperCase();
+            let nombreArchivo = `Informe_${apellidos}_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.pdf`;
+            
+            // Obtener el elemento a convertir
+            const element = document.querySelector('.results-container');
+            
+            // Crear canvas desde HTML
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                allowTaint: true,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+            
+            // Obtener dimensiones
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 295; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            // Crear PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            let heightLeft = imgHeight;
+            let position = 0;
+            
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Agregar imágenes al PDF (una por página si es necesario)
+            while (heightLeft >= 0) {
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                if (heightLeft > 0) {
+                    pdf.addPage();
+                    position = heightLeft - imgHeight;
+                }
+            }
+            
+            // Descargar
+            pdf.save(nombreArchivo);
+            
+        } catch(e) {
+            console.error("Error al generar PDF:", e);
+            alert("Error al generar el PDF. Intenta usar 'Imprimir PDF' en su lugar.");
         }
     }
     </script>
