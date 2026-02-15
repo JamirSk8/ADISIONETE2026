@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admisión ETE - SERVICIO DE PSICOLOGÍA</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-link active" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+        <button class="nav-link" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+        <button class="nav-link" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+        <button class="nav-link" onclick="window.location.href='Valanti.html'">VALANTI</button>
+        <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+    </nav>
+    <div class="header-bar">
+        <img src="psi.png" alt="Logo Psicología" class="logo-img">
+        <span class="header-title">ADMISIÓN ETE</span>
+        <img src="ete.png" alt="Logo ETE" class="logo-img">
+    </div>
+    <script>
+    // Autocompletar y sincronizar datos generales (apellidos, nombres, sexo, fecha) usando localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+        if(localStorage.getItem('datosGenerales')) {
+            const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            if(document.getElementById('apellidos') && datos.apellidos) document.getElementById('apellidos').value = datos.apellidos;
+            if(document.getElementById('nombres') && datos.nombres) document.getElementById('nombres').value = datos.nombres;
+            if(document.getElementById('sexo') && datos.sexo) document.getElementById('sexo').value = datos.sexo;
+            if(document.getElementById('fecha') && datos.fecha) document.getElementById('fecha').value = datos.fecha;
+        }
+        if(document.getElementById('apellidos')) document.getElementById('apellidos').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('nombres')) document.getElementById('nombres').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('sexo')) document.getElementById('sexo').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('fecha')) document.getElementById('fecha').addEventListener('input', guardarDatosGenerales);
+    });
+    function guardarDatosGenerales() {
+        localStorage.setItem('datosGenerales', JSON.stringify({
+            apellidos: document.getElementById('apellidos') ? document.getElementById('apellidos').value : '',
+            nombres: document.getElementById('nombres') ? document.getElementById('nombres').value : '',
+            sexo: document.getElementById('sexo') ? document.getElementById('sexo').value : '',
+            fecha: document.getElementById('fecha') ? document.getElementById('fecha').value : ''
+        }));
+    }
+    </script>
+    <div class="container">
+                    <form id="admisionForm" autocomplete="on" style="width:100%;">
+                        <div class="form-section">
+                            <label class="form-label" for="apellidos">Apellidos</label>
+                            <input class="form-input" type="text" id="apellidos" name="apellidos" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="nombres">Nombres</label>
+                            <input class="form-input" type="text" id="nombres" name="nombres" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="dni">DNI</label>
+                            <input class="form-input" type="text" id="dni" name="dni" maxlength="8" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="nacimiento">Fecha de nacimiento</label>
+                            <input class="form-input" type="date" id="nacimiento" name="nacimiento" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="edad">Edad</label>
+                            <input class="form-input" type="number" id="edad" name="edad" min="16" max="99" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="sexo">Sexo</label>
+                            <select class="form-input" id="sexo" name="sexo" required>
+                                <option value="">Seleccione</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="codigo_postulante">Código postulante</label>
+                            <input class="form-input" type="text" id="codigo_postulante" name="codigo_postulante" required>
+                        </div>
+                        <div class="feedback" id="feedback"></div>
+                    </form>
+        </div>
+        <div style="display:flex;justify-content:center;align-items:center;margin-top:18px;">
+            <button type="button" id="btnSiguiente" class="btn" style="background:#218838;min-width:180px;font-size:1.18rem;">Siguiente</button>
+        </div>
+        <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const campos = ['apellidos','nombres','dni','nacimiento','edad','sexo','codigo_postulante'];
+            let datos = {};
+            if(localStorage.getItem('datosGenerales')) {
+                datos = JSON.parse(localStorage.getItem('datosGenerales'));
+                campos.forEach(c=>{
+                    if(document.getElementById(c) && datos[c]) document.getElementById(c).value = datos[c];
+                });
+            }
+            campos.forEach(c=>{
+                if(document.getElementById(c)) document.getElementById(c).addEventListener('input', guardarDatosGenerales);
+            });
+            if(document.getElementById('btnSiguiente')) document.getElementById('btnSiguiente').onclick = function() {
+                guardarDatosGenerales();
+                window.location.href = 'cbp_lrc_web.html';
+            };
+            // Evitar submit por enter
+            if(document.getElementById('admisionForm')) document.getElementById('admisionForm').addEventListener('submit', function(e){e.preventDefault();});
+        });
+        function guardarDatosGenerales() {
+            const campos = ['apellidos','nombres','dni','nacimiento','edad','sexo','codigo_postulante'];
+            let datos = {};
+            campos.forEach(c=>{
+                datos[c] = document.getElementById(c) ? document.getElementById(c).value : '';
+            });
+            localStorage.setItem('datosGenerales', JSON.stringify(datos));
+        }
+        </script>
+    </div>
+</body>
+</html>
