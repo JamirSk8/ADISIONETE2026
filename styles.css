@@ -1,0 +1,768 @@
+/* Global Styles */
+body {
+    background: linear-gradient(135deg, #3d4f2a 60%, #b6d7a8 100%);
+    color: #222;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+    color: #3d4f2a;
+}
+
+/* Container */
+.container {
+    max-width: 950px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px #2222;
+    padding: 32px 40px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; Removed to prevent centering issues with full width children */
+    border: 3.5px solid #eaf3e2;
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 10px 2vw 20px 2vw;
+        max-width: 95%;
+    }
+}
+
+/* Nav Bar */
+.nav-bar {
+    width: 100%;
+    background: #4a6137;
+    border-radius: 0 0 14px 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 36px;
+    padding: 18px 0 8px 0;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px #0001;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: #f8f8f8;
+    background: none;
+    border: none;
+    font-size: 1.13em;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 4px 12px;
+    margin: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    outline: none;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: #6e8b54;
+    color: #fff;
+}
+
+/* Header Bar */
+.header-bar {
+    width: 100%;
+    background: #eaf3e2;
+    border-radius: 16px; /* Changed to match container style or standalone */
+    margin-bottom: 24px;
+    padding: 18px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #425b36;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px #0001;
+    position: relative;
+    box-sizing: border-box;
+    /* Reset radius if it's top-level */
+}
+
+/* For main header bar inside styled containers or outside */
+body > .header-bar {
+    border-radius: 0 0 18px 18px;
+    margin-top: 0;
+}
+
+.container .header-bar {
+    border-radius: 16px;
+}
+
+.header-title {
+    text-align: center;
+    font-size: 2.1rem;
+    color: #3d4f2a;
+    font-weight: 600;
+    letter-spacing: 2px;
+    flex: 1;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.logo-img {
+    height: 60px;
+    width: 60px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px #2222;
+    object-fit: contain;
+    margin: 0 18px;
+    border: 2.5px solid #098447;
+}
+
+/* Form Elements */
+.form-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #098447; /* Primary Green */
+    margin-bottom: 7px;
+    display: block;
+    font-size: 1.08rem;
+    letter-spacing: 0.5px;
+}
+
+.form-input, select, .input-short {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2.5px solid #b6d7a8;
+    font-size: 1.13rem;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    background: #f6fbf3;
+    transition: border 0.2s;
+}
+
+.input-short {
+    width: 60px !important; 
+    text-align: center;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.form-input:focus, select:focus, .input-short:focus {
+    border: 2.5px solid #098447;
+    outline: none;
+    background: #eaf3e2;
+}
+
+/* Buttons */
+.btn {
+    background: linear-gradient(90deg, #098447 60%, #3d4f2a 100%);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 1.12rem;
+    cursor: pointer;
+    margin-top: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 6px #2221;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.btn:active {
+    background: #2c3a1e;
+    transform: scale(0.98);
+}
+
+.btn:focus {
+    outline: 2px solid #228B22;
+}
+
+/* Feedback & Results */
+.feedback, .error {
+    color: #d32f2f;
+    font-weight: bold;
+    margin-bottom: 14px;
+    font-size: 1.08rem;
+    text-align: center;
+}
+
+.result, .resultado {
+    background: #f6fbf3;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 24px;
+    font-size: 1.08rem;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px #2221;
+    text-align: left;
+    border: 2.5px solid #b6d7a8;
+    overflow: hidden;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background: #eaf3e2;
+    color: #3d4f2a;
+    font-weight: bold;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #fcfdfc;
+}
+
+.test-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 24px;
+    background: #f8faf7;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 1.01rem;
+    box-shadow: 0 2px 8px #2221;
+}
+
+.test-table th, .test-table td {
+    padding: 10px 6px;
+    text-align: center;
+}
+
+.test-table th {
+    background: #b6d7a8;
+    color: #222;
+    font-size: 1.08rem;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.test-table tr:nth-child(even) td {
+    background: #f4f7fa;
+}
+
+.test-table tr:nth-child(odd) td {
+    background: #fff;
+}
+
+.test-table td.item {
+    text-align: left;
+    font-size: 1.01em;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+        font-size: 11px; /* Smaller font for print */
+        margin: 0;
+        padding: 0;
+    }
+    @page {
+        margin: 5mm;
+        size: A4 portrait;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial Narrow', Arial, sans-serif; /* Más compacto */
+    }
+    .container {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+    }
+    .nav-bar, .btn, .header-bar, .no-print {
+        display: none !important;
+    }
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Two columns */
+        gap: 3mm; /* Gap ultrarreducido */
+        break-inside: avoid;
+    }
+    .result-section {
+        border: 1px solid #aaa;
+        padding: 2mm;
+        page-break-inside: avoid;
+        margin-bottom: 2mm;
+        /* Force compact line heights */
+        line-height: 1.1;
+    }
+    .result-section h3 {
+        margin: 0 0 2px 0;
+        font-size: 9pt; 
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 1px;
+        color: #000;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .chart-container {
+        margin: 1mm 0 0 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        width: 100% !important;
+    }
+    canvas {
+        max-height: 28mm !important; /* ~100px fixed */
+        width: 100% !important;
+    }
+    /* Compact elements */
+    .result-box, .resultado {
+        margin-top: 1px;
+        padding: 1px;
+        font-size: 8pt;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+    table {
+        font-size: 7.5pt; /* Extremely compact */
+        margin-bottom: 1px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 1px 2px;
+        border: 1px solid #888;
+    }
+    /* Hide non-essential */
+    .leyenda, .description, .interpretacion-larga {
+        display: none;
+    }
+    /* Header specific for print */
+    h2 {
+        font-size: 11pt !important;
+        margin: 0 0 2mm 0 !important;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+    ul {
+        margin: 0;
+        padding-left: 10px;
+    }
+    li {
+        margin-bottom: 0;
+        font-size: 8pt;
+    }
+    p {
+        margin: 1px 0;
+        font-size: 8pt;
+    }
+    /* Force specific hidden elements from tests */
+    .btn, .nav-link, .no-print { display: none !important; }
+    
+    /* Ensure clean white background */
+    body, .result-section, .container {
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* UNIVERSAL COMPACT TABLE STYLE FOR PRINT */
+    table, .cbp-result-table, .resumen-table, .valanti-compact-table table {
+        font-size: 7pt !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-bottom: 2px !important;
+        font-family: Arial, sans-serif !important;
+    }
+    
+    th, td, .cbp-result-table th, .cbp-result-table td, 
+    .resumen-table th, .resumen-table td,
+    .valanti-compact-table th, .valanti-compact-table td {
+        padding: 1px 3px !important;
+        height: auto !important;
+        border: 1px solid #888 !important;
+        line-height: 1.1 !important;
+    }
+    
+    /* Specific overrides for column widths if needed */
+    th { background: #eee !important; color: #000 !important; font-weight: bold; }
+    
+    /* Hide headers/footers generated by browser if possible (user setting, but we can try) */
+    @page { margin: 5mm; size: A4; }
+
+    /* Compact lists (like Casa test) */
+    ul.casa-list {
+        margin: 0 !important;
+        padding-left: 10px !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr; /* 2 columns to save height */
+        column-gap: 15px;
+    }
+    li {
+        margin-bottom: 0 !important;
+        line-height: 1.1 !important;
+        font-size: 6.8pt !important; /* Slightly smaller for 2-col fit */
+        list-style-type: none !important; /* remove dots to save space */
+        padding-left: 0;
+        text-indent: -5px; /* hanging indent illusion if needed */
+    }
+    
+    /* Compact Headings */
+    h3 {
+        font-size: 10pt !important;
+        margin: 2px 0 4px 0 !important;
+        border-bottom: 2px solid #ccc; /* More distinct section separator */
+        text-align: left;
+    }
+
+    /* Charts must be tiny */
+    canvas {
+        max-height: 120px !important; /* Slightly larger for better visibility */
+        min-height: 90px !important; /* Ensure visibility */
+        width: 100% !important;
+        object-fit: contain;
+    }
+    .chart-container {
+        margin: 4px 0 0 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        display: block !important;
+        background: transparent !important;
+        border: none !important;
+        overflow: visible !important;
+    }
+    
+    /* Layout control */
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6mm; /* Larger gap for symmetry */
+        align-items: start;
+        height: 100%;
+    }
+    
+    /* Section specific */
+    .result-section {
+        margin-bottom: 4mm !important; /* increased margin */
+        padding: 3mm !important; /* increased padding */
+        border: 1px solid #999 !important;
+        box-shadow: none !important;
+        height: auto;
+    }
+
+    /* Ensure body fills page */
+    .container {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 5mm; /* Page padding */
+        border: none;
+        display: block;
+    }
+
+    /* Datos Postulante - Highlighted */
+    #datosPostulante {
+        font-size: 10pt !important;
+        border: 1px solid #777;
+        padding: 6px;
+        background: #fdfdfd !important;
+        margin-bottom: 15px !important; 
+    }
+
+    /* Global font size strict enforcement */
+    * {
+        font-family: Arial, sans-serif !important;
+        /* Default base size for print */
+    }
+    
+    /* Compact Headings */
+    h3 {
+        font-size: 10pt !important; /* Slightly larger header */
+        margin: 3px 0 !important;
+        border-bottom: 1px solid #ccc;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    /* Increase data visibility */
+    #datosPostulante {
+        font-size: 11pt !important; /* Larger applicant info */
+        padding: 4px 0;
+        margin-bottom: 5mm !important;
+        border-bottom: 1px solid #000;
+    }
+
+    /* Table text adjustment */
+    table, .cbp-result-table, .resumen-table, .valanti-compact-table table {
+        font-size: 7.5pt !important; /* Slightly larger for readability */
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-bottom: 3px !important;
+    }
+
+    th, td, .cbp-result-table th, .cbp-result-table td, 
+    .resumen-table th, .resumen-table td,
+    .valanti-compact-table th, .valanti-compact-table td {
+        padding: 2px 3px !important; /* More padding */
+        height: auto !important;
+        border: 1px solid #888 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* EQI and CBP strict override for print */
+    .eqi-nivel-alto, .eqi-nivel-regular, .eqi-nivel-bajo,
+    .cbp-nivel-alto, .cbp-nivel-medio, .cbp-nivel-bajo {
+        border: none !important; 
+        background: transparent !important;
+        padding: 0 !important;
+        color: #000 !important;
+        font-weight: normal !important;
+        display: inline !important;
+    }
+}
+
+
+/* Screen Layout for Results Page */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible; /* Ensure content isn't clipped */
+}
+
+.result-section {
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for separation */
+}
+
+/* Default Screen Style for Valanti Table */
+.valanti-compact-table table {
+    font-size: 0.85rem; /* Slightly smaller for better fit */
+    width: 100%;
+    margin-top: 10px;
+}
+.valanti-compact-table th {
+    background: #eaf3e2;
+    padding: 4px;
+}
+.valanti-compact-table td {
+    padding: 4px;
+}
+
+@media screen and (min-width: 768px) {
+    .result-grid-screen {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px; /* Increased gap */
+        align-items: start;
+    }
+    
+    .chart-container {
+        max-width: 100%; 
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px; /* Reduced padding */
+    }
+    
+    /* Ensure charts don't overflow */
+    canvas {
+        max-width: 100%;
+        /* height: auto !important; remove auto which can cause collapse with maintainAspect false */
+        height: 300px !important; /* Force a reasonable height */
+        width: 100% !important;
+        object-fit: contain;
+    }
+}
+
+
+.nivel-bajo, .cbp-nivel-bajo {
+    color: #b30000;
+    border: 2px solid #b30000;
+    border-radius: 16px;
+    padding: 2px 18px;
+    font-weight: bold;
+    display: inline-block;
+    background: #fff;
+}
+
+.nivel-regular, .cbp-nivel-medio, .nivel-medio {
+    color: #e67e22;
+    border: 2px solid #e67e22;
+    border-radius: 16px;
+    padding: 2px 18px;
+    font-weight: bold;
+    display: inline-block;
+    background: #fff;
+}
+
+.nivel-alto, .cbp-nivel-alto {
+    color: #228B22;
+    border: 2px solid #228B22;
+    border-radius: 16px;
+    padding: 2px 18px;
+    font-weight: bold;
+    display: inline-block;
+    background: #fff;
+}
+
+.validez-box {
+    margin: 0 auto 18px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15em;
+    font-weight: bold;
+}
+
+/* EQI Screen Styles */
+.eqi-nivel-alto { background:#228B2222; color:#228B22; font-weight:bold; padding:2px 8px; border-radius:12px; }
+.eqi-nivel-regular { background:#e67e2222; color:#e67e22; font-weight:bold; padding:2px 8px; border-radius:12px; }
+.eqi-nivel-bajo { background:#b3000022; color:#b30000; font-weight:bold; padding:2px 8px; border-radius:12px; }
+
+.chart-container {
+    width: 100%;
+    max-width: 520px;
+    margin: 24px auto 0 auto;
+    background: #f8faf7;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #2221;
+    padding: 18px 10px 10px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* Casa Test Specifics */
+.indicador {
+    margin-bottom: 18px;
+    width: 100%;
+}
+.indicador > label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #3d4f2a;
+    font-size: 1.05em;
+}
+
+.opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.opciones .option-btn {
+    width: auto;
+    min-width: 120px;
+    padding: 8px 16px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* Option Button Styles */
+.option-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 32px;
+    height: 38px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9em;
+    color: #444;
+    user-select: none;
+    margin: 0;
+}
+
+.option-btn:hover {
+    background: #e0e6db;
+    border-color: #b6d7a8;
+}
+
+.option-btn input[type="radio"] {
+    display: none;
+}
+.option-btn input[type="checkbox"] {
+    display: none;
+}
+
+/* Fallback via JS or :has support */
+.option-btn:has(input:checked) {
+    background: #4a6137;
+    color: white;
+    border-color: #3d4f2a;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.option-btn.selected {
+    background: #4a6137;
+    color: white;
+    border-color: #3d4f2a;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type="radio"]:checked + span {
+    /* backup style just in case */
+}
+
+/* Valanti Specifics */
+.label-left { text-align: left; }
+.label-right { text-align: right; }
+
+/* Utility */
+.center { text-align: center; }
+
+/* Valanti specific */
+.row-num {
+    width: 30px;
+    text-align: center;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.3rem;
+    color: #098447;
+    margin-bottom: 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Section Wrapper */
+.section {
+    width: 100%;
+    margin-bottom: 32px;
+}

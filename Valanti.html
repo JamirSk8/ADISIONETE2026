@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>EQI-C (Versión corta) - Sistematización</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+        <nav class="nav-bar">
+            <button class="nav-link" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+            <button class="nav-link" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+            <button class="nav-link" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+            <button class="nav-link active" onclick="window.location.href='Valanti.html'">VALANTI</button>
+            <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+        </nav>
+        <div class="header-bar"><span class="header-title">TEST VALANTI</span></div>
+                       
+        <script>
+        // Autocompletar y sincronizar datos generales (apellidos, nombres, sexo, fecha) usando localStorage
+        window.addEventListener('DOMContentLoaded', function() {
+            if(localStorage.getItem('datosGenerales')) {
+                const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+                if(document.getElementById('apellidos') && datos.apellidos) document.getElementById('apellidos').value = datos.apellidos;
+                if(document.getElementById('nombres') && datos.nombres) document.getElementById('nombres').value = datos.nombres;
+                if(document.getElementById('sexo') && datos.sexo) document.getElementById('sexo').value = datos.sexo;
+                if(document.getElementById('fecha') && datos.fecha) document.getElementById('fecha').value = datos.fecha;
+            }
+            if(document.getElementById('apellidos')) document.getElementById('apellidos').addEventListener('input', guardarDatosGenerales);
+            if(document.getElementById('nombres')) document.getElementById('nombres').addEventListener('input', guardarDatosGenerales);
+            if(document.getElementById('sexo')) document.getElementById('sexo').addEventListener('input', guardarDatosGenerales);
+            if(document.getElementById('fecha')) document.getElementById('fecha').addEventListener('input', guardarDatosGenerales);
+        });
+        function guardarDatosGenerales() {
+            localStorage.setItem('datosGenerales', JSON.stringify({
+                apellidos: document.getElementById('apellidos') ? document.getElementById('apellidos').value : '',
+                nombres: document.getElementById('nombres') ? document.getElementById('nombres').value : '',
+                sexo: document.getElementById('sexo') ? document.getElementById('sexo').value : '',
+                fecha: document.getElementById('fecha') ? document.getElementById('fecha').value : ''
+            }));
+        }
+        </script>
+
+        <div class="container">
+            <details style="background:#f6fbf3;border:2px solid #b6d7a8;border-radius:12px;padding:18px 24px 12px 24px;margin:18px 0 24px 0;max-width:950px;box-shadow:0 2px 8px #2221;">
+                <summary style="font-size:1.18em;font-weight:bold;color:#2c3e50;cursor:pointer;">🧠 Instrucciones para la Corrección del Test Valanti (Sistematizadas)</summary>
+                <ol style="margin-top:14px;font-size:1.05em;line-height:1.6;">
+                    <li><b>Verificar suma = 3 en cada ítem doble.</b> Si no se cumple, corregir antes de continuar.</li>
+                    <li><b>Identificar la dimensión de cada frase</b> según la clave del autor (Verdad, Rectitud, Paz, Amor, No violencia).</li>
+                    <li><b>Sumar puntajes de valores (ítems 1–9):</b> Los puntos asignados a cada frase se suman directamente al valor correspondiente.</li>
+                    <li><b>Sumar puntajes de antivalores (ítems 10–30):</b> El puntaje de la frase más inaceptable se suma al valor opuesto que vulnera, sin invertir ni restar.</li>
+                    <li><b>Obtener puntajes directos por valor.</b></li>
+                    <li><b>Ubicar media y desviación estándar normativas</b> (según el manual).</li>
+                    <li><b>Transformar a puntajes estándar:</b> Media=50, DE=10. Fórmula: 50 + 10 × (Puntaje Directo – Media) / DE.</li>
+                    <li><b>Ubicar respecto a 50:</b> >50 = por encima del promedio, <50 = por debajo.</li>
+                    <li><b>Asignar nivel interpretativo:</b> ≥70 Muy alto, 60–69 Alto, 50–59 Promedio, 40–49 Bajo, ≤39 Muy bajo.</li>
+                    <li><b>(Opcional)</b> Comparar con el perfil organizacional (esperado: 50).</li>
+                </ol>
+                <div style="margin-top:10px;font-size:0.98em;color:#555;">Esta corrección es automática en este sistema. Si tienes dudas, revisa el manual o consulta a un especialista.</div>
+            </details>
+            <form id="valanti-form">
+                <!-- Datos generales se leen de localStorage desde AdmisionETE.html -->
+                <table class="test-table">
+                    <thead>
+                        <tr>
+                            <th class="row-num">N°</th>
+                            <th class="label-left">Afirmación Izquierda</th>
+                            <th>Puntaje</th>
+                            <th>Puntaje</th>
+                            <th class="label-right">Afirmación Derecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 30 filas, l1-l30 y r1-r30 -->
+                        <tr><td>1</td><td class="label-left">Muestro dedicación a las personas que amo</td><td><input class="input-short" type="number" min="0" max="3" name="l1" required></td><td><input class="input-short" type="number" min="0" max="3" name="r1" required></td><td class="label-right">Actúo con perseverancia</td></tr>
+                        <tr><td>2</td><td class="label-left">Soy tolerante</td><td><input class="input-short" type="number" min="0" max="3" name="l2" required></td><td><input class="input-short" type="number" min="0" max="3" name="r2" required></td><td class="label-right">Prefiero actuar con ética</td></tr>
+                        <tr><td>3</td><td class="label-left">Al pensar, utilizo mi intuición o “sexto sentido”</td><td><input class="input-short" type="number" min="0" max="3" name="l3" required></td><td><input class="input-short" type="number" min="0" max="3" name="r3" required></td><td class="label-right">Me siento una persona digna</td></tr>
+                        <tr><td>4</td><td class="label-left">Logro buena concentración mental</td><td><input class="input-short" type="number" min="0" max="3" name="l4" required></td><td><input class="input-short" type="number" min="0" max="3" name="r4" required></td><td class="label-right">Perdono todas las ofensas de cualquier persona</td></tr>
+                        <tr><td>5</td><td class="label-left">Normalmente razono mucho</td><td><input class="input-short" type="number" min="0" max="3" name="l5" required></td><td><input class="input-short" type="number" min="0" max="3" name="r5" required></td><td class="label-right">Me destaco por el liderazgo en mis acciones</td></tr>
+                        <tr><td>6</td><td class="label-left">Pienso con integridad</td><td><input class="input-short" type="number" min="0" max="3" name="l6" required></td><td><input class="input-short" type="number" min="0" max="3" name="r6" required></td><td class="label-right">Me coloco objetivos y metas en mi vida personal</td></tr>
+                        <tr><td>7</td><td class="label-left">Soy una persona de iniciativa</td><td><input class="input-short" type="number" min="0" max="3" name="l7" required></td><td><input class="input-short" type="number" min="0" max="3" name="r7" required></td><td class="label-right">En mi trabajo normalmente soy curioso</td></tr>
+                        <tr><td>8</td><td class="label-left">Doy amor</td><td><input class="input-short" type="number" min="0" max="3" name="l8" required></td><td><input class="input-short" type="number" min="0" max="3" name="r8" required></td><td class="label-right">Para pensar hago síntesis de las distintas ideas</td></tr>
+                        <tr><td>9</td><td class="label-left">Me siento en calma</td><td><input class="input-short" type="number" min="0" max="3" name="l9" required></td><td><input class="input-short" type="number" min="0" max="3" name="r9" required></td><td class="label-right">Pienso con veracidad</td></tr>
+                        <tr><td>10</td><td class="label-left">Irrespetar la propiedad</td><td><input class="input-short" type="number" min="0" max="3" name="l10" required></td><td><input class="input-short" type="number" min="0" max="3" name="r10" required></td><td class="label-right">Sentir inquietud</td></tr>
+                        <tr><td>11</td><td class="label-left">Ser irresponsable</td><td><input class="input-short" type="number" min="0" max="3" name="l11" required></td><td><input class="input-short" type="number" min="0" max="3" name="r11" required></td><td class="label-right">Ser desconsiderado hacia cualquier persona</td></tr>
+                        <tr><td>12</td><td class="label-left">Caer en contradicciones al pensar</td><td><input class="input-short" type="number" min="0" max="3" name="l12" required></td><td><input class="input-short" type="number" min="0" max="3" name="r12" required></td><td class="label-right">Sentir intolerancia</td></tr>
+                        <tr><td>13</td><td class="label-left">Ser violento</td><td><input class="input-short" type="number" min="0" max="3" name="l13" required></td><td><input class="input-short" type="number" min="0" max="3" name="r13" required></td><td class="label-right">Actuar con cobardía</td></tr>
+                        <tr><td>14</td><td class="label-left">Sentirse presumido</td><td><input class="input-short" type="number" min="0" max="3" name="l14" required></td><td><input class="input-short" type="number" min="0" max="3" name="r14" required></td><td class="label-right">Generar divisiones y discordia entre los seres humanos</td></tr>
+                        <tr><td>15</td><td class="label-left">Ser cruel</td><td><input class="input-short" type="number" min="0" max="3" name="l15" required></td><td><input class="input-short" type="number" min="0" max="3" name="r15" required></td><td class="label-right">Sentir ira</td></tr>
+                        <tr><td>16</td><td class="label-left">Pensar con confusión</td><td><input class="input-short" type="number" min="0" max="3" name="l16" required></td><td><input class="input-short" type="number" min="0" max="3" name="r16" required></td><td class="label-right">Tener odio en el corazón</td></tr>
+                        <tr><td>17</td><td class="label-left">Decir blasfemias</td><td><input class="input-short" type="number" min="0" max="3" name="l17" required></td><td><input class="input-short" type="number" min="0" max="3" name="r17" required></td><td class="label-right">Ser escandaloso</td></tr>
+                        <tr><td>18</td><td class="label-left">Crear desigualdades entre los seres humanos</td><td><input class="input-short" type="number" min="0" max="3" name="l18" required></td><td><input class="input-short" type="number" min="0" max="3" name="r18" required></td><td class="label-right">Apasionarse por una idea</td></tr>
+                        <tr><td>19</td><td class="label-left">Sentirse inconstante</td><td><input class="input-short" type="number" min="0" max="3" name="l19" required></td><td><input class="input-short" type="number" min="0" max="3" name="r19" required></td><td class="label-right">Crear rivalidad hacia otros</td></tr>
+                        <tr><td>20</td><td class="label-left">Pensamientos irracionales</td><td><input class="input-short" type="number" min="0" max="3" name="l20" required></td><td><input class="input-short" type="number" min="0" max="3" name="r20" required></td><td class="label-right">Traoconar a un desconocido</td></tr>
+                        <tr><td>21</td><td class="label-left">Ostentar las riquezas materiales</td><td><input class="input-short" type="number" min="0" max="3" name="l21" required></td><td><input class="input-short" type="number" min="0" max="3" name="r21" required></td><td class="label-right">Sentirse infeliz</td></tr>
+                        <tr><td>22</td><td class="label-left">Entorpecer la cooperación entre los seres humanos</td><td><input class="input-short" type="number" min="0" max="3" name="l22" required></td><td><input class="input-short" type="number" min="0" max="3" name="r22" required></td><td class="label-right">La maldad</td></tr>
+                        <tr><td>23</td><td class="label-left">Odiar a cualquier ser de la naturaleza</td><td><input class="input-short" type="number" min="0" max="3" name="l23" required></td><td><input class="input-short" type="number" min="0" max="3" name="r23" required></td><td class="label-right">Hacer distinciones entre las personas</td></tr>
+                        <tr><td>24</td><td class="label-left">Sentirse intranquilo</td><td><input class="input-short" type="number" min="0" max="3" name="l24" required></td><td><input class="input-short" type="number" min="0" max="3" name="r24" required></td><td class="label-right">Ser infiel</td></tr>
+                        <tr><td>25</td><td class="label-left">Tener la mente dispersa</td><td><input class="input-short" type="number" min="0" max="3" name="l25" required></td><td><input class="input-short" type="number" min="0" max="3" name="r25" required></td><td class="label-right">Mostrar apatía al pensar</td></tr>
+                        <tr><td>26</td><td class="label-left">La injusticia</td><td><input class="input-short" type="number" min="0" max="3" name="l26" required></td><td><input class="input-short" type="number" min="0" max="3" name="r26" required></td><td class="label-right">Sentirse angustiado</td></tr>
+                        <tr><td>27</td><td class="label-left">Vengarse de los que odian a todo el mundo</td><td><input class="input-short" type="number" min="0" max="3" name="l27" required></td><td><input class="input-short" type="number" min="0" max="3" name="r27" required></td><td class="label-right">Vengarse del que hace daño a un familiar</td></tr>
+                        <tr><td>28</td><td class="label-left">Usar abusivamente el poder</td><td><input class="input-short" type="number" min="0" max="3" name="l28" required></td><td><input class="input-short" type="number" min="0" max="3" name="r28" required></td><td class="label-right">Distraerse</td></tr>
+                        <tr><td>29</td><td class="label-left">Ser desagradecido con los que ayudan</td><td><input class="input-short" type="number" min="0" max="3" name="l29" required></td><td><input class="input-short" type="number" min="0" max="3" name="r29" required></td><td class="label-right">Ser egoísta con todos</td></tr>
+                        <tr><td>30</td><td class="label-left">Cualquier forma de irrespeto</td><td><input class="input-short" type="number" min="0" max="3" name="l30" required></td><td><input class="input-short" type="number" min="0" max="3" name="r30" required></td><td class="label-right">Odiar</td></tr>
+                    </tbody>
+                </table>
+                <div id="errorMsg" class="error"></div>
+                <button type="submit" class="btn">Calcular Perfil</button>
+                <button type="button" class="btn" style="background:#b30000;" onclick="limpiarValanti()">Limpiar</button>
+                <button type="button" class="btn" id="btnSiguiente" style="display:none;background:#218838;margin-left:10px;" onclick="window.location.href='Casa.html'">Siguiente Test (Casa) &rarr;</button>
+            </form>
+            <div id="result" class="result" style="display:none;"></div>
+        </div>
+
+    <script>
+    const dimensiones = {
+        "Verdad": ["D09B", "D08B", "D07B", "D06A", "D03A", "D05A", "D12A", "D16A", "D18B", "D23B", "D25B", "D20A"],
+        "Rectitud": ["D02B", "D07A", "D05B", "D06B", "D01B", "D11A", "D13B", "D28A", "D21A", "D26A", "D24B", "D29A"],
+        "Paz": ["D03B", "D04A", "D10B", "D12B", "D14A", "D15B", "D17B", "D19A", "D26B", "D24A", "D28B", "D25A", "D21B"],
+        "Amor": ["D08A", "D01A", "D02A", "D15A", "D16B", "D17A", "D19B", "D30B", "D22B", "D27B"],
+        "No violencia": ["D09A", "D04B", "D10A", "D11B", "D13A", "D14B", "D18A", "D29B", "D30A", "D20B", "D27A", "D23A", "D22A"]
+    };
+
+    // Generar lista de todos los ítems con su dimensión
+    let itemDimension = {};
+    Object.entries(dimensiones).forEach(([dim, items]) => {
+        items.forEach(it => itemDimension[it] = dim);
+    });
+
+    // Generar pares (ejemplo: D01A vs D01B, D02A vs D02B, ... hasta D40A vs D40B)
+    let pares = [];
+    for(let i=1; i<=40; i++) {
+        let num = i.toString().padStart(2, '0');
+        pares.push({
+            a: `D${num}A`,
+            b: `D${num}B`
+        });
+    }
+
+    // Mapear inputs de la tabla a los códigos de ítem (asume que name="l1" es D01A, name="r1" es D01B, etc)
+    function getInputCode(idx, side) {
+        let num = idx.toString().padStart(2, '0');
+        return `D${num}${side}`;
+    }
+
+    // --- Ajuste automático de inputs para suma 3 ---
+    for(let i=1; i<=40; i++) {
+        const l = document.querySelector(`[name='l${i}']`);
+        const r = document.querySelector(`[name='r${i}']`);
+        if(l && r) {
+            l.addEventListener('input', function() {
+                let val = parseInt(l.value) || 0;
+                if(val < 0) val = 0;
+                if(val > 3) val = 3;
+                l.value = val;
+                r.value = 3 - val;
+            });
+            r.addEventListener('input', function() {
+                let val = parseInt(r.value) || 0;
+                if(val < 0) val = 0;
+                if(val > 3) val = 3;
+                r.value = val;
+                l.value = 3 - val;
+            });
+        }
+    }
+
+    document.getElementById('valanti-form').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('errorMsg').textContent = '';
+        // Puntajes directos por dimensión
+        let puntajes = {"Verdad":0, "Rectitud":0, "Paz":0, "Amor":0, "No violencia":0};
+        // Mapeo oficial de ítems a dimensiones (según manual y Excel) - generado dinámicamente desde el objeto 'dimensiones'
+        // para evitar discrepancias y errores de hardcoding.
+        const mapeoDimensiones = [];
+        for(let i=1; i<=30; i++) {
+            let dimL = null, dimR = null;
+            let codeL = `D${i.toString().padStart(2,'0')}A`;
+            let codeR = `D${i.toString().padStart(2,'0')}B`;
+            
+            // Buscar en el objeto dimensiones
+            for(let [dim, items] of Object.entries(dimensiones)) {
+                if(items.includes(codeL)) dimL = dim;
+                if(items.includes(codeR)) dimR = dim;
+            }
+            // Fallback for missing items (should not happen if key is complete)
+            if(!dimL && i<=30) console.warn(`Item ${codeL} not found in key`);
+            if(!dimR && i<=30) console.warn(`Item ${codeR} not found in key`);
+            
+            mapeoDimensiones.push([dimL, dimR]);
+        }
+
+        /* Legacy Hardcoded Mapping Removed to fix logic errors in items 10, 22, 23, 27, 30 */
+        
+        for(let i=1; i<=30; i++) {
+            let lval = parseInt(document.querySelector(`[name='l${i}']`)?.value) || 0;
+            let rval = parseInt(document.querySelector(`[name='r${i}']`)?.value) || 0;
+            let dims = mapeoDimensiones[i-1];
+            if(dims && dims[0]) puntajes[dims[0]] += lval;
+            if(dims && dims[1]) puntajes[dims[1]] += rval;
+        }
+        // Normas oficiales del Excel/manual
+        const normas = {
+            "Verdad": {media:15.65, de:4.70},
+            "Rectitud": {media:21.05, de:4.44},
+            "Paz": {media:17.35, de:6.61},
+            "Amor": {media:16.68, de:5.41},
+            "No violencia": {media:21.22, de:7.19}
+        };
+        let perfil = {};
+        Object.keys(puntajes).forEach(dim => {
+            // Puntuación estándar: 50 + 10 * (X - media) / DE
+            perfil[dim] = Math.round(50 + 10 * (puntajes[dim] - normas[dim].media) / normas[dim].de);
+        });
+        // Construir tabla de resultados igual al Excel/manual
+        let html = `<h2>Resultados VALANTI</h2>`;
+        let nombrePersona = '';
+        if(localStorage.getItem('datosGenerales')) {
+            const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            if(datos.nombres || datos.apellidos) nombrePersona = `${datos.nombres||''} ${datos.apellidos||''}`.trim();
+        }
+        if(!nombrePersona) nombrePersona = 'ETE CABPIABARA';
+        nombrePersona = nombrePersona.toUpperCase();
+
+        // Función para interpretación y color
+        function interpretacion(val) {
+            if(val >= 70) return {cat:'Muy alto', color:'#008000'};
+            if(val >= 60) return {cat:'Alto', color:'#0070c0'};
+            if(val >= 50) return {cat:'Promedio', color:'#c00'};
+            if(val >= 40) return {cat:'Bajo', color:'#c00'};
+            return {cat:'Muy bajo', color:'#c00'};
+        }
+
+        html += `<div style='overflow-x:auto'><table border='1' cellpadding='6' style='border-collapse:collapse;min-width:600px;text-align:center;font-size:1.08em;'>`;
+        html += `<tr><th>Valor</th>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<th>${dim}</th>`});
+        html += `</tr>`;
+        html += `<tr><td>Promedio Normas nacionales, 1997<br>(n=730)</td>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<td>${normas[dim].media}</td>`});
+        html += `</tr>`;
+        html += `<tr><td>Desviación estándar Normas nacionales, 1997<br>(n=730)</td>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<td>${normas[dim].de}</td>`});
+        html += `</tr>`;
+        html += `<tr><td>Puntajes directos</td>`;
+        Object.keys(puntajes).forEach(dim=>{html+=`<td>${puntajes[dim]}</td>`});
+        html += `</tr>`;
+        html += `<tr><td style='color:#0033cc;font-weight:bold;'>50</td>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<td style='color:#0033cc;font-size:1.2em;font-weight:bold;'>50</td>`});
+        html += `</tr>`;
+        html += `<tr><td style='color:#c00;font-weight:bold;'>${nombrePersona}</td>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<td style='color:#c00;font-size:1.2em;font-weight:bold;'>${perfil[dim]}</td>`});
+        html += `</tr>`;
+        html += `<tr><td style='color:#c00;font-weight:bold;'>Interpretación del puntaje estándar</td>`;
+        Object.keys(perfil).forEach(dim=>{
+            let val = perfil[dim];
+            let inter = interpretacion(val);
+            let color = inter.color;
+            let cat = inter.cat;
+            html += `<td style='color:${color};font-weight:bold;'>${cat}</td>`;
+        });
+        html += `</tr>`;
+        html += `<tr><td style='color:#c00;font-size:1.3em;font-weight:bold;text-align:center;'>*****</td>`;
+        Object.keys(perfil).forEach(dim=>{html+=`<td style='color:#c00;font-size:1.3em;font-weight:bold;text-align:center;'>*****</td>`});
+        html += `</tr>`;
+        html += `<tr><td>Distancia con la Organización</td>`;
+        Object.keys(perfil).forEach(dim=>{
+            let dist = perfil[dim] - 50;
+            html += `<td>${dist>0?"+"+dist:dist}</td>`;
+        });
+        html += `</tr>`;
+        html += `</table></div>`;
+
+        // --- Definición de textos de interpretación ---
+        const textosInterpretacion = {
+            "Verdad": {
+                titulo: "VERDAD (Dimensión Intelectual)",
+                niveles: {
+                    "Muy alto": "Predominio del pensamiento analítico, fuerte orientación a la coherencia lógica, alta necesidad de veracidad y consistencia interna. Puede existir autoexigencia intelectual.",
+                    "Alto": "Buena capacidad crítica y discernimiento. Funcionamiento cognitivo estructurado y equilibrado.",
+                    "Promedio": "Pensamiento funcional y adaptativo, sin predominio marcado del eje intelectual.",
+                    "Bajo": "Posible menor priorización del análisis reflexivo. Decisiones más intuitivas o impulsivas.",
+                    "Muy bajo": "Débil estructuración cognitiva valoral. Riesgo de inconsistencia en criterios o juicio."
+                }
+            },
+            "Rectitud": {
+                titulo: "RECTITUD (Dimensión Conductual)",
+                niveles: {
+                    "Muy alto": "Elevado sentido del deber, responsabilidad y coherencia acción–principio. Posible rigidez moral.",
+                    "Alto": "Buena disciplina, compromiso y cumplimiento de metas.",
+                    "Promedio": "Conducta adaptativa, sin predominio fuerte del deber sobre otras áreas.",
+                    "Bajo": "Dificultad relativa en constancia o responsabilidad sostenida.",
+                    "Muy bajo": "Desorganización conductual o baja regulación ética."
+                }
+            },
+            "Paz": {
+                titulo: "PAZ (Dimensión Emocional)",
+                niveles: {
+                    "Muy alto": "Alta regulación emocional, serenidad interna consolidada, estabilidad afectiva.",
+                    "Alto": "Buen manejo emocional y tolerancia al estrés.",
+                    "Promedio": "Regulación emocional funcional pero no central.",
+                    "Bajo": "Menor prioridad a la calma y reflexión. Posible reactividad emocional.",
+                    "Muy bajo": "Dificultad significativa en autorregulación emocional. Vulnerabilidad al estrés o conflicto interno."
+                }
+            },
+            "Amor": {
+                titulo: "AMOR (Dimensión Afectiva)",
+                niveles: {
+                    "Muy alto": "Fuerte orientación empática y vincular. Alta sensibilidad interpersonal.",
+                    "Alto": "Buenas habilidades sociales y afectivas.",
+                    "Promedio": "Relaciones equilibradas, sin dependencia afectiva marcada.",
+                    "Bajo": "Menor prioridad al vínculo emocional. Tendencia a distanciamiento.",
+                    "Muy bajo": "Dificultades importantes en empatía o conexión interpersonal."
+                }
+            },
+            "No violencia": {
+                titulo: "NO VIOLENCIA (Dimensión Espiritual)",
+                niveles: {
+                    "Muy alto": "Fuerte conciencia social, visión universalista y ética trascendente.",
+                    "Alto": "Respeto por la diversidad y orientación prosocial consolidada.",
+                    "Promedio": "Valores espirituales integrados de forma equilibrada.",
+                    "Bajo": "Menor prioridad a principios universales o justicia social.",
+                    "Muy bajo": "Tendencia a rigidez ideológica o escasa apertura a lo diferente."
+                }
+            }
+        };
+
+        // --- Vista Web Completa (Muestra detallada para el usuario en el momento) ---
+        let cardsHtml = `<div style="margin-top:24px;border-top:2px solid #ddd;padding-top:16px;">`;
+        cardsHtml += `<h3 style="color:#2c3e50;text-align:center;">Interpretación Cualitativa del Perfil</h3>`;
+        cardsHtml += `<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">`;
+
+        Object.keys(perfil).forEach(dim => {
+            let val = perfil[dim];
+            let catKey = "Muy bajo";
+            if (val >= 65) catKey = "Muy alto";
+            else if (val >= 55) catKey = "Alto";
+            else if (val >= 45) catKey = "Promedio";
+            else if (val >= 35) catKey = "Bajo";
+
+            let info = textosInterpretacion[dim];
+            if(info) {
+                let texto = info.niveles[catKey] || "Sin interpretación disponible.";
+                cardsHtml += `<div style="background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="font-weight:bold;color:#2980b9;margin-bottom:6px;">${info.titulo}</div>
+                    <div style="font-size:0.95em;margin-bottom:4px;">Puntaje: ${val} (<span style="color:${interpretacion(val).color}">${catKey}</span>)</div>
+                    <div style="font-size:0.9em;color:#555;line-height:1.4;">${texto}</div>
+                </div>`;
+            }
+        });
+        cardsHtml += `</div></div>`;
+        html += cardsHtml;
+
+        // Interpretación textual global nota
+        html += `<div style='margin-top:18px;font-size:1.08em;line-height:1.5;'><b>Nota:</b> El perfil valoral resultante refleja prioridades relativas entre valores y su posición respecto a la norma poblacional.</div>`;
+
+        // Gráfico radar (canvas)
+        html += `<div style='margin-top:18px;'><canvas id="radarChart" width="400" height="400"></canvas></div>`;
+        document.getElementById('result').innerHTML = html;
+        document.getElementById('result').style.display = 'block';
+        if(document.getElementById('btnSiguiente')) document.getElementById('btnSiguiente').style.display = 'inline-block';
+
+         // Guardar resultados y gráfico en localStorage para integración con FORMATO COMPACTO (Tabla Única)
+         try {
+            // Generar HTML compacto para el Reporte Integrado
+            let integratedHtml = `<div class="valanti-compact-table">
+            <table class="valanti-table">
+                <thead>
+                    <tr style="background:#f4f4f4;">
+                        <th style="border:1px solid #ccc;padding:2px;width:15%;text-align:left;">Dimensión</th>
+                        <th style="border:1px solid #ccc;padding:2px;width:10%;text-align:center;">Ptje</th>
+                        <th style="border:1px solid #ccc;padding:2px;width:15%;text-align:center;">Nivel</th>
+                        <th style="border:1px solid #ccc;padding:2px;">Interpretación</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            Object.keys(perfil).forEach(dim => {
+                let val = perfil[dim];
+                let catKey = "Muy bajo";
+                if (val >= 65) catKey = "Muy alto";
+                else if (val >= 55) catKey = "Alto";
+                else if (val >= 45) catKey = "Promedio";
+                else if (val >= 35) catKey = "Bajo";
+                
+                let info = textosInterpretacion[dim];
+                let texto = info ? (info.niveles[catKey] || "") : "";
+                
+                // Color para el nivel
+                let colorFunc = interpretacion(val).color;
+
+                integratedHtml += `<tr>
+                    <td style="border:1px solid #ccc;padding:2px;font-weight:bold;">${dim}</td>
+                    <td style="border:1px solid #ccc;padding:2px;text-align:center;">${val}</td>
+                    <td style="border:1px solid #ccc;padding:2px;text-align:center;color:${colorFunc};font-weight:bold;">${catKey}</td>
+                    <td style="border:1px solid #ccc;padding:2px;line-height:1.1;">${texto}</td>
+                </tr>`;
+            });
+            integratedHtml += `</tbody></table></div>`;
+
+            localStorage.setItem('valanti_resultados', integratedHtml);
+
+            // Preparar datos para gráfico tipo radar (Chart.js compatible)
+            const chartData = {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(perfil),
+                    datasets: [{
+                        label: 'VALANTI',
+                        data: Object.values(perfil),
+                        backgroundColor: 'rgba(52,152,219,0.3)',
+                        borderColor: '#2980b9',
+                        pointBackgroundColor: '#2980b9',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#2980b9'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {legend: {display: false}},
+                    scales: {
+                        r: {
+                            min: 30,
+                            max: 70,
+                            ticks: {stepSize: 10, display: false}, // Ocultar ticks para ahorrar espacio visual
+                            pointLabels: {
+                                font: {size: 10} // Fuente más pequeña para el chart integrado
+                            }
+                        }
+                    }
+                }
+            };
+            localStorage.setItem('valanti_chart', JSON.stringify(chartData));
+        } catch(e) { console.error("Error saving to localStorage", e); }
+
+        // Gráfico radar simple sin librerías externas
+        setTimeout(() => {
+            const canvas = document.getElementById('radarChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 400, 400);
+            const labels = Object.keys(perfil);
+            const values = labels.map(l => perfil[l]);
+            const N = labels.length;
+            const center = 200, radio = 120, minVal = 30, maxVal = 70;
+            // Ejes
+            ctx.strokeStyle = '#bbb';
+            for(let i=0;i<N;i++){
+                let ang = (Math.PI*2/N)*i-Math.PI/2;
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.lineTo(center+radio*Math.cos(ang), center+radio*Math.sin(ang));
+                ctx.stroke();
+            }
+            // Polígono
+            ctx.beginPath();
+            for(let i=0;i<N;i++){
+                let ang = (Math.PI*2/N)*i-Math.PI/2;
+                let r = ((values[i]-minVal)/(maxVal-minVal))*radio;
+                let x = center + r*Math.cos(ang);
+                let y = center + r*Math.sin(ang);
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(52,152,219,0.3)';
+            ctx.fill();
+            ctx.strokeStyle = '#2980b9';
+            ctx.stroke();
+            // Etiquetas
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#222';
+            for(let i=0;i<N;i++){
+                let ang = (Math.PI*2/N)*i-Math.PI/2;
+                let x = center + (radio+20)*Math.cos(ang);
+                let y = center + (radio+20)*Math.sin(ang);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(labels[i], x, y);
+            }
+        }, 100);
+        window.scrollTo(0,document.body.scrollHeight);
+        };
+
+        // Botón limpiar: borra campos, resultados y localStorage de Valanti
+        function limpiarValanti() {
+            if(confirm('¿Seguro que deseas limpiar el formulario y los resultados de VALANTI?')){
+                for(let i=1;i<=30;i++){
+                    let l=document.querySelector(`[name='l${i}']`); let r=document.querySelector(`[name='r${i}']`);
+                    if(l) l.value='';
+                    if(r) r.value='';
+                }
+                document.getElementById('result').innerHTML='';
+                document.getElementById('result').style.display='none';
+                document.getElementById('errorMsg').textContent='';
+                localStorage.removeItem('valanti_resultados');
+                localStorage.removeItem('valanti_chart');
+            }
+    };
+    </script>
+</body>
+</html>

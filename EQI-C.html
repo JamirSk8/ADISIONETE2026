@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>EQI-C (Emotional Quotient Inventory - Corto)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-link" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+        <button class="nav-link" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+        <button class="nav-link active" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+        <button class="nav-link" onclick="window.location.href='Valanti.html'">VALANTI</button>
+        <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+    </nav>
+    <div class="header-bar">
+        <span class="header-title">EQI-C</span>
+    </div>
+
+    <script>
+    // Autocompletar y sincronizar datos generales (apellidos, nombres, sexo, fecha) usando localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+        if(localStorage.getItem('datosGenerales')) {
+            const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            if(document.getElementById('apellidos') && datos.apellidos) document.getElementById('apellidos').value = datos.apellidos;
+            if(document.getElementById('nombres') && datos.nombres) document.getElementById('nombres').value = datos.nombres;
+            if(document.getElementById('sexo') && datos.sexo) document.getElementById('sexo').value = datos.sexo;
+            if(document.getElementById('fecha') && datos.fecha) document.getElementById('fecha').value = datos.fecha;
+        }
+        if(document.getElementById('apellidos')) document.getElementById('apellidos').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('nombres')) document.getElementById('nombres').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('sexo')) document.getElementById('sexo').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('fecha')) document.getElementById('fecha').addEventListener('input', guardarDatosGenerales);
+    });
+    function guardarDatosGenerales() {
+        localStorage.setItem('datosGenerales', JSON.stringify({
+            apellidos: document.getElementById('apellidos') ? document.getElementById('apellidos').value : '',
+            nombres: document.getElementById('nombres') ? document.getElementById('nombres').value : '',
+            sexo: document.getElementById('sexo') ? document.getElementById('sexo').value : '',
+            fecha: document.getElementById('fecha') ? document.getElementById('fecha').value : ''
+        }));
+    }
+    </script>
+    <div class="container">
+        <form id="eqicForm" autocomplete="off" onsubmit="event.preventDefault();calcularEQIC();return false;">
+            <!-- Datos generales se leen de localStorage desde AdmisionETE.html -->
+            <table class="test-table" id="testTable">
+                <thead>
+                    <tr>
+                        <th style="width:32px">N°</th>
+                        <th>Ítem</th>
+                        <th>Nunca</th>
+                        <th>Casi nunca</th>
+                        <th>A veces</th>
+                        <th>Casi siempre</th>
+                        <th>Siempre</th>
+                    </tr>
+                </thead>
+                <tbody id="testBody"></tbody>
+            </table>
+            <div style="display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;">
+                <button type="submit" class="btn">Calcular</button>
+                <button type="button" class="btn" style="background:#b30000;" onclick="limpiarEQIC()">Limpiar</button>
+            </div>
+            <div style="text-align:center;margin-top:15px;">
+                <button type="button" class="btn" id="btnSiguiente" style="display:none;background:#218838;" onclick="window.location.href='Valanti.html'">Siguiente Test (Valanti) &rarr;</button>
+            </div>
+        </form>
+        <div id="resultados" class="result" style="display:none;"></div>
+        <div class="chart-container"><canvas id="eqicChart" width="440" height="220" style="display:none;"></canvas></div>
+    </div>
+    <script>
+        // Ítems reales EQI-C
+        const ITEMS = [
+            "No soy capaz de expresar mis ideas.",
+            "Me es difícil luchar mis derechos.",
+            "He logrado muy poco en los últimos años.",
+            "Me es difícil entender cómo me siento.",
+            "Me es difícil describir lo que siento.",
+            "Me resulta difícil expresar mis sentimientos más íntimos.",
+            "Me resulta difícil tomar decisiones por mí mismo(a).",
+            "Prefiero que otros tomen decisiones por mí.",
+            "Soy sensible ante los sentimientos de las otras personas.",
+            "Me importa lo que puede sucederle a los demás.",
+            "Soy bueno para comprender los sentimientos de las personas.",
+            "Mantengo buenas relaciones con los demás.",
+            "Mis relaciones más cercanas significan mucho, tanto para mí como para mis amigos.",
+            "Mis amigos me confían sus intimidades.",
+            "Me gusta ayudar a la gente.",
+            "Para poder resolver una situación que se presenta, analizo todas las posibilidades existentes.",
+            "Por lo general, me trabo cuando pienso acerca de las diferentes maneras de resolver un problema.",
+            "Cuando enfrento una situación difícil me gusta reunir toda la información que pueda sobre ella.",
+            "Para superar las dificultades que se me presentan actúo paso a paso.",
+            "Me gusta tener una visión general de un problema antes de intentar solucionarlo.",
+            "Tengo una tendencia a explotar de cólera fácilmente.",
+            "Tengo reacciones fuertes, intensas, que son difíciles de controlar.",
+            "Soy impulsivo(a), y eso me trae problemas.",
+            "Tengo mal carácter.",
+            "Tengo problemas para controlarme cuando me enojo.",
+            "Soy impulsivo(a).",
+            "Soy impaciente.",
+            "Siento que me resulta difícil controlar mi ansiedad."
+        ];
+        // Ítems inversos
+        const INVERSOS = [1,2,3,4,5,6,7,8,17,21,22,23,24,25,26,27,28];
+        // Renderizar tabla con botones
+        const LABELS = ['Nunca','Casi nunca','A veces','Casi siempre','Siempre'];
+        let testBody = document.getElementById('testBody');
+        for(let i=0; i<ITEMS.length; i++){
+            let tr = document.createElement('tr');
+            tr.innerHTML = `<td>${i+1}</td><td class='item'>${ITEMS[i]}</td>` +
+                LABELS.map((label,j)=>
+                    `<td><label class="option-btn"><input type="radio" name="item${i+1}" value="${j+1}" required>${label}</label></td>`
+                ).join('');
+            testBody.appendChild(tr);
+        }
+        
+        // Estilo visual selección
+        document.addEventListener('change', function(e) {
+            if(e.target.matches('input[type="radio"]')) {
+                 const name = e.target.name;
+                 if(name.startsWith('item')) {
+                     document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        r.parentElement.classList.remove('selected');
+                        if(r.checked) r.parentElement.classList.add('selected');
+                    });
+                 }
+            }
+        });
+
+        // Recodificación inversos
+        function recodificar(num, val) {
+            return INVERSOS.includes(num) ? 6-parseInt(val) : parseInt(val);
+        }
+        // Cálculo y visualización
+        function calcularEQIC(){
+            let f = document.getElementById('eqicForm');
+            let resps = [];
+            for(let i=1;i<=28;i++){
+                let el = f['item'+i];
+                if(!el || !el.value) { alert('Responde todos los ítems'); return; }
+                let v = parseInt(el.value);
+                if(v<1||v>5) { alert('Solo valores 1 a 5'); return; }
+                resps.push(recodificar(i, v));
+            }
+            // Suma por dimensión
+            let intrapersonal = resps.slice(0,8).reduce((a,b)=>a+b,0);
+            let interpersonal = resps.slice(8,15).reduce((a,b)=>a+b,0);
+            let adaptabilidad = resps.slice(15,20).reduce((a,b)=>a+b,0);
+            let estres = resps.slice(20,28).reduce((a,b)=>a+b,0);
+            // Clasificación y textos
+            function nivel(val, dim) {
+                if(dim=="intrapersonal") return val>=31?0:(val>=24?1:2);
+                if(dim=="interpersonal") return val>=30?0:(val>=24?1:2);
+                if(dim=="adaptabilidad") return val>=20?0:(val>=16?1:2);
+                if(dim=="estres") return val>=32?0:(val>=23?1:2);
+            }
+            let niveles = [
+                nivel(intrapersonal, "intrapersonal"),
+                nivel(interpersonal, "interpersonal"),
+                nivel(adaptabilidad, "adaptabilidad"),
+                nivel(estres, "estres")
+            ];
+            let etiquetas = ["Alto","Regular","Bajo"];
+            let colores = ["#228B22", "#e67e22", "#b30000"];
+            let interpretaciones = [
+                ["Excelente desarrollo intrapersonal.", "Desarrollo intrapersonal adecuado.", "Debe fortalecer su desarrollo intrapersonal."],
+                ["Excelente desarrollo interpersonal.", "Desarrollo interpersonal adecuado.", "Debe fortalecer su desarrollo interpersonal."],
+                ["Excelente adaptabilidad.", "Adaptabilidad adecuada.", "Debe fortalecer su adaptabilidad."],
+                ["Excelente manejo del estrés.", "Manejo del estrés adecuado.", "Debe fortalecer su manejo del estrés."]
+            ];
+            // Tabla resumen
+            let html = `<div class='validez-box'>Resultados EQI-C</div>`;
+            html += `<table class='resumen-table'>`;
+            html += `<tr><th>Componente</th><th>Puntaje</th><th>Nivel</th><th>Interpretación</th></tr>`;
+            [
+                ["Intrapersonal", intrapersonal, niveles[0], interpretaciones[0][niveles[0]]],
+                ["Interpersonal", interpersonal, niveles[1], interpretaciones[1][niveles[1]]],
+                ["Adaptabilidad", adaptabilidad, niveles[2], interpretaciones[2][niveles[2]]],
+                ["Manejo del Estrés", estres, niveles[3], interpretaciones[3][niveles[3]]]
+            ].forEach(([dim, punt, niv, texto]) => {
+                // Use class for styling to allow print overrides
+                let nivelClass = `eqi-nivel-${etiquetas[niv].toLowerCase()}`;
+                html += `<tr><td>${dim}</td><td>${punt}</td><td><span class='${nivelClass}'>${etiquetas[niv]}</span></td><td>${texto}</td></tr>`;
+            });
+            html += `<tr><th>Total EQI-C</th><th colspan='3'>${resps.reduce((a,b)=>a+b,0)}</th></tr>`;
+            html += `</table>`;
+            
+            // Add style for screen only if not in CSS file yet, or rely on global classes if available.
+            // But better to rely on class names we can target in CSS.
+
+            document.getElementById('resultados').innerHTML = html;
+            document.getElementById('resultados').style.display = 'block';
+            document.getElementById('btnSiguiente').style.display = 'inline-block';
+            // Gráfico de barras
+            let chartCanvas = document.getElementById('eqicChart');
+            chartCanvas.style.display = 'block';
+            if(window.eqic_chart) window.eqic_chart.destroy();
+            window.eqic_chart = new Chart(chartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: ['Intrapersonal','Interpersonal','Adaptabilidad','Manejo del Estrés'],
+                    datasets: [{
+                        label: 'Puntaje',
+                        data: [intrapersonal, interpersonal, adaptabilidad, estres],
+                        backgroundColor: niveles.map(niv=>colores[niv]),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 40,
+                            grid: { color: '#eaeaea' },
+                            title: { display: true, text: 'Puntaje', color: '#222', font: { weight: 'bold' } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            // Guardar resultados y gráfico en localStorage
+            try {
+                localStorage.setItem('eqi_resultados', html);
+                const chartData = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Intrapersonal','Interpersonal','Adaptabilidad','Manejo del Estrés'],
+                        datasets: [{
+                            label: 'Puntaje',
+                            data: [intrapersonal, interpersonal, adaptabilidad, estres],
+                            backgroundColor: niveles.map(niv=>colores[niv]),
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 40,
+                                grid: { color: '#eaeaea' },
+                                title: { display: true, text: 'Puntaje', color: '#222', font: { weight: 'bold' } }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                };
+                localStorage.setItem('eqi_chart', JSON.stringify(chartData));
+            } catch(e){}
+        }
+
+        // Botón limpiar: borra campos, resultados y localStorage de EQI-C
+        function limpiarEQIC() {
+            if(confirm('¿Seguro que deseas limpiar el formulario y los resultados de EQI-C?')){
+                document.getElementById('eqicForm').reset();
+                document.getElementById('resultados').style.display = 'none';
+                let chartCanvas = document.getElementById('eqicChart');
+                chartCanvas.style.display = 'none';
+                if(window.eqic_chart) window.eqic_chart.destroy();
+                // Quitar selección visual de chips
+                document.querySelectorAll('.chip.selected').forEach(e=>e.classList.remove('selected'));
+                localStorage.removeItem('eqi_resultados');
+                localStorage.removeItem('eqi_chart');
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

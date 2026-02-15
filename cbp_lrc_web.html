@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test de Personalidad (CBP-LRC)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-link" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+        <button class="nav-link active" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+        <button class="nav-link" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+        <button class="nav-link" onclick="window.location.href='Valanti.html'">VALANTI</button>
+        <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+    </nav>
+    <div class="header-bar">
+        <span class="header-title">Test de Personalidad (CBP-LRC)</span>
+    </div>
+    <script>
+    // Autocompletar y sincronizar datos generales (apellidos, nombres, sexo, fecha) usando localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+        if(localStorage.getItem('datosGenerales')) {
+            const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            if(document.getElementById('apellidos') && datos.apellidos) document.getElementById('apellidos').value = datos.apellidos;
+            if(document.getElementById('nombres') && datos.nombres) document.getElementById('nombres').value = datos.nombres;
+            if(document.getElementById('sexo') && datos.sexo) document.getElementById('sexo').value = datos.sexo;
+            if(document.getElementById('fecha') && datos.fecha) document.getElementById('fecha').value = datos.fecha;
+        }
+        if(document.getElementById('apellidos')) document.getElementById('apellidos').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('nombres')) document.getElementById('nombres').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('sexo')) document.getElementById('sexo').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('fecha')) document.getElementById('fecha').addEventListener('input', guardarDatosGenerales);
+    });
+    function guardarDatosGenerales() {
+        localStorage.setItem('datosGenerales', JSON.stringify({
+            apellidos: document.getElementById('apellidos') ? document.getElementById('apellidos').value : '',
+            nombres: document.getElementById('nombres') ? document.getElementById('nombres').value : '',
+            sexo: document.getElementById('sexo') ? document.getElementById('sexo').value : '',
+            fecha: document.getElementById('fecha') ? document.getElementById('fecha').value : ''
+        }));
+    }
+    </script>
+    <div class="container">
+        <form id="cbpForm">
+            <!-- Datos generales se leen de localStorage desde AdmisionETE.html -->
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Ítem</th>
+                        <th>Nunca</th>
+                        <th>Casi nunca</th>
+                        <th>A veces</th>
+                        <th>Casi siempre</th>
+                        <th>Siempre</th>
+                    </tr>
+                </thead>
+                <tbody id="testBody"></tbody>
+            </table>
+            <button type="button" class="btn" onclick="calcularCBP()">Calcular</button>
+            <button type="button" class="btn" style="background:#b30000;" onclick="limpiarCBP()">Limpiar</button>
+            <button type="button" class="btn" id="btnSiguiente" style="display:none; background:#218838; margin-left:10px;" onclick="window.location.href='EQI-C.html'">Siguiente Test (EQI-C) &rarr;</button>
+        </form>
+        <div id="resultados" class="result" style="display:none;"></div>
+        <div id="avisoFaltante" style="display:none;color:#b30000;font-weight:bold;text-align:center;margin-bottom:10px;"></div>
+        <div class="chart-container"><canvas id="cbpChart" width="440" height="220" style="display:none;"></canvas></div>
+        <iframe id="pdfFrame" style="display:none;"></iframe>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Autocompletar y sincronizar datos generales (apellidos, nombres, sexo) usando localStorage
+    window.addEventListener('DOMContentLoaded', function() {
+        if(localStorage.getItem('datosGenerales')) {
+            const datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            if(document.getElementById('apellidos') && datos.apellidos) document.getElementById('apellidos').value = datos.apellidos;
+            if(document.getElementById('nombres') && datos.nombres) document.getElementById('nombres').value = datos.nombres;
+            if(document.getElementById('sexo') && datos.sexo) document.getElementById('sexo').value = datos.sexo;
+        }
+        if(document.getElementById('apellidos')) document.getElementById('apellidos').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('nombres')) document.getElementById('nombres').addEventListener('input', guardarDatosGenerales);
+        if(document.getElementById('sexo')) document.getElementById('sexo').addEventListener('input', guardarDatosGenerales);
+    });
+    function guardarDatosGenerales() {
+        localStorage.setItem('datosGenerales', JSON.stringify({
+            apellidos: document.getElementById('apellidos') ? document.getElementById('apellidos').value : '',
+            nombres: document.getElementById('nombres') ? document.getElementById('nombres').value : '',
+            sexo: document.getElementById('sexo') ? document.getElementById('sexo').value : ''
+        }));
+    }
+        const ITEMS = [
+            "¿Hace cosas nuevas?",
+            "¿Le interesa aprender de otras culturas (danzas, costumbres, idiomas, comidas, etc.)?",
+            "¿Le gusta que las cosas se hagan como tú quieres?",
+            "¿Acepta consejo de otras personas?",
+            "¿Siempre da las gracias?",
+            "¿Tiene dificultades para relacionarse con otras personas?",
+            "¿Es divertido y ríe con facilidad?",
+            "¿Le gusta decir lo que piensa y siente?",
+            "¿Siempre tiene que estar haciendo alguna cosa?",
+            "¿Contesta siempre las llamadas por teléfono o los mensajes?",
+            "¿Le molestan los defectos de otras personas?",
+            "¿Confía rápidamente en personas que no conoce?",
+            "¿Ayuda a otras personas?",
+            "¿Tiene problemas por su forma de pensar?",
+            "¿Hace cosas, sin pensar en las consecuencias?",
+            "¿Programa sus actividades del día o la semana?",
+            "¿Trabaja o estudia hasta conseguir lo que quiere?",
+            "¿Deja las actividades que hace para otro momento?",
+            "¿Alguna vez se ha reído de un chiste grosero?",
+            "¿Se enoja o se pone triste fácilmente?",
+            "¿Eres una persona preocupada?",
+            "¿Se siente solo (a)?",
+            "¿Es una persona nerviosa (a)?",
+            "¿Alguna vez ha tenido una sonrisa falsa?",
+            "¿Siempre quiere ganar en los juegos que participa?",
+            "¿Siempre es aceptado por las personas que conoce?"
+        ];
+        const INVERTED = [3,6,11,15,18];
+        const DS = [5,10,12,19,25,26];
+        const FACTORS = {
+            "Apertura": [1,2,3,4],
+            "Extraversión": [6,7,8,9],
+            "Amabilidad": [11,13,14,24],
+            "Responsabilidad": [15,16,17,18],
+            "Inestabilidad emocional": [20,21,22,23]
+        };
+        const RANGES = {
+            "Apertura": [[0,13,"Bajo"],[14,17,"Medio"],[18,20,"Alto"]],
+            "Extraversión": [[0,11,"Bajo"],[12,14,"Medio"],[15,20,"Alto"]],
+            "Amabilidad": [[0,12,"Bajo"],[13,14,"Medio"],[15,20,"Alto"]],
+            "Responsabilidad": [[0,12,"Bajo"],[13,14,"Medio"],[15,20,"Alto"]],
+            "Inestabilidad emocional": [[0,9,"Bajo"],[10,12,"Medio"],[13,20,"Alto"]]
+        };
+        // Render test items
+        const LABELS = ['Nunca','Casi nunca','A veces','Casi siempre','Siempre'];
+        let testBody = document.getElementById('testBody');
+        for(let i=0; i<ITEMS.length; i++){
+            let tr = document.createElement('tr');
+            tr.innerHTML = `<td>${i+1}</td><td class='item'>${ITEMS[i]}</td>` +
+                LABELS.map((label, j) => 
+                    `<td><label class="option-btn" onclick="updateSelection(this)"><input type="radio" name="item${i+1}" value="${j+1}" required>${label}</label></td>`
+                ).join('');
+            testBody.appendChild(tr);
+        }
+
+        // JS helper for styling selection cross-browser
+        function updateSelection(lbl) {
+            // Remove 'selected' from all siblings in the row (but actually labels are in different TDs)
+            // We need to hunt down the radio group.
+            // Since we are clicking the label, the radio inside changes.
+            // But to be safe for visual update:
+            const radio = lbl.querySelector('input');
+            const name = radio.name;
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                r.parentElement.classList.remove('selected');
+            });
+            if(radio.checked) lbl.classList.add('selected');
+        }
+        
+        // Also add a listener for change events globally to catch keyboard nav
+        document.addEventListener('change', function(e) {
+            if(e.target.matches('input[type="radio"]')) {
+                const name = e.target.name;
+                if(name.startsWith('item')) {
+                     document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                        r.parentElement.classList.remove('selected');
+                        if(r.checked) r.parentElement.classList.add('selected');
+                    });
+                }
+            }
+        });
+
+        function invert(val){ return 6-val; }
+        function calcDS(resps){
+            let ds = 0;
+            for(let idx of DS){
+                let v = resps[idx-1];
+                if(v==1||v==5) ds++;
+            }
+            return ds;
+        }
+        function classify(factor, score){
+            for(let [minv,maxv,label] of RANGES[factor]){
+                if(score>=minv && score<=maxv) return label;
+            }
+            return "Sin rango";
+        }
+        function interpretarCBP(factor, nivel) {
+            if(factor=="Apertura"){
+                if(nivel=="Bajo") return "Debe fortalecer su apertura a nuevas experiencias.";
+                if(nivel=="Medio") return "Apertura adecuada, puede mejorar.";
+                if(nivel=="Alto") return "Excelente apertura a nuevas experiencias.";
+            }
+            if(factor=="Extraversión"){
+                if(nivel=="Bajo") return "Debe fortalecer su extraversión.";
+                if(nivel=="Medio") return "Extraversión adecuada.";
+                if(nivel=="Alto") return "Excelente extraversión.";
+            }
+            if(factor=="Amabilidad"){
+                if(nivel=="Bajo") return "Debe fortalecer su amabilidad.";
+                if(nivel=="Medio") return "Amabilidad adecuada.";
+                if(nivel=="Alto") return "Excelente amabilidad.";
+            }
+            if(factor=="Responsabilidad"){
+                if(nivel=="Bajo") return "Debe fortalecer su responsabilidad.";
+                if(nivel=="Medio") return "Responsabilidad adecuada.";
+                if(nivel=="Alto") return "Excelente responsabilidad.";
+            }
+            if(factor=="Inestabilidad emocional"){
+                if(nivel=="Bajo") return "Excelente estabilidad emocional.";
+                if(nivel=="Medio") return "Estabilidad emocional adecuada.";
+                if(nivel=="Alto") return "Debe fortalecer su manejo emocional.";
+            }
+            return "";
+        }
+        let cbp_result = "";
+        let cbp_chart = null;
+        function calcularCBP(){
+            let f = document.getElementById('cbpForm');
+            let datos = {};
+            for(let el of f.elements){
+                if(el.name && !el.name.startsWith('item')) datos[el.name]=el.value;
+            }
+            let resps = [];
+            for(let i=1;i<=26;i++){
+                let val = f['item'+i].value;
+                if(!val) {
+                    let aviso = document.getElementById('avisoFaltante');
+                    aviso.innerHTML = `Falta responder el ítem <b>${i}</b>: "${ITEMS[i-1]}"`;
+                    aviso.style.display = 'block';
+                    document.getElementById('resultados').style.display = 'none';
+                    let row = document.querySelectorAll('.test-table tr')[i];
+                    if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
+                    return;
+                }
+                resps.push(parseInt(val));
+            }
+            document.getElementById('avisoFaltante').style.display = 'none';
+            let recoded = resps.map((v,i)=>INVERTED.includes(i+1)?invert(v):v);
+            let ds_score = calcDS(resps);
+            let validez = ds_score>3?"INVÁLIDO":"VÁLIDO";
+            let factorLabels = [];
+            let factorScores = [];
+            let factorColors = [];
+            // Tabla resumen
+            let html = `<div class='cbp-result-title'>Resultados CBP-LRC</div>`;
+            if(validez !== "VÁLIDO") {
+                html += `<div class="warning-box" style='background-color:#ffebee; color:#c62828; padding:10px; border-radius:4px; margin-bottom:10px; font-weight:bold; text-align:center; border:1px solid #ef9a9a;'>
+                            ⚠️ PROTOCOLO INVÁLIDO: El postulante ha mostrado inconsistencias o falta de honestidad en sus respuestas (Deseabilidad Social alta). 
+                         </div>`;
+            }
+            html += `<table class='cbp-result-table'>`;
+            html += `<tr><th>Dimensión</th><th>Puntaje</th><th>Nivel</th><th>Interpretación</th></tr>`;
+            
+            // Siempre calculamos y mostramos los factores, aunque sea inválido
+            for(let factor in FACTORS){
+                let score = FACTORS[factor].map(idx=>recoded[idx-1]).reduce((a,b)=>a+b,0);
+                let nivel = classify(factor,score);
+                let nivelClass = nivel=="Bajo"?"cbp-nivel-bajo":(nivel=="Medio"?"cbp-nivel-medio":"cbp-nivel-alto");
+                // Remove inline style color logic for print
+                html += `<tr><td>${factor}</td><td>${score}</td><td><span class='${nivelClass}'>${nivel}</span></td><td class='cbp-interpretacion'>${interpretarCBP(factor,nivel)}</td></tr>`;
+                factorLabels.push(factor);
+                factorScores.push(score);
+                factorColors.push(nivel=="Bajo"?"#b30000":(nivel=="Medio"?"#e67e22":"#228B22"));
+            }
+
+            html += `</table>`;
+            document.getElementById('resultados').innerHTML = html;
+            document.getElementById('resultados').style.display = 'block';
+            cbp_result = html.replace(/<[^>]+>/g, '').replace(/\n/g, '\n');
+            
+            // Gráfico - Siempre mostrar
+            let chartCanvas = document.getElementById('cbpChart');
+            chartCanvas.style.display = 'block';
+            if(cbp_chart) cbp_chart.destroy();
+            cbp_chart = new Chart(chartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: factorLabels,
+                    datasets: [{
+                        label: 'Puntaje',
+                        data: factorScores,
+                        backgroundColor: factorColors
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, max: 20 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            
+            // Guardar resultados y gráfico en localStorage
+            try {
+                localStorage.setItem('cbp_resultados', html);
+                const chartData = {
+                    type: 'bar',
+                    data: {
+                        labels: factorLabels,
+                        datasets: [{
+                            label: 'Puntaje',
+                            data: factorScores,
+                            backgroundColor: factorColors
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, max: 20 } },
+                        plugins: { legend: { display: false } }
+                    }
+                };
+                localStorage.setItem('cbp_chart', JSON.stringify(chartData));
+            } catch(e){}
+            
+            // Mostrar botón siguiente siempre
+            document.getElementById('btnSiguiente').style.display = 'inline-block';
+        }
+
+        // Botón limpiar: borra campos, resultados y localStorage de CBP-LRC
+        function limpiarCBP() {
+            if(confirm('¿Seguro que deseas limpiar el formulario y los resultados de CBP-LRC?')){
+                document.getElementById('cbpForm').reset();
+                document.getElementById('resultados').innerHTML='';
+                document.getElementById('resultados').style.display='none';
+                let chartCanvas = document.getElementById('cbpChart');
+                chartCanvas.style.display = 'none';
+                if(window.cbp_chart) window.cbp_chart.destroy();
+                localStorage.removeItem('cbp_resultados');
+                localStorage.removeItem('cbp_chart');
+            }
+        }
+    </script>
+</body>
+</html>

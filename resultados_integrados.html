@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados Integrados - Evaluación Psicológica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header-bar">
+            <span class="header-title">Resultados Integrados</span>
+        </div>
+        
+        <div class="nav-bar no-print">
+            <button class="nav-link" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+            <button class="nav-link" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+            <button class="nav-link" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+            <button class="nav-link" onclick="window.location.href='Valanti.html'">VALANTI</button>
+            <button class="nav-link" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+        </div>
+
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin:10px 0;" class="no-print">
+            <button class="btn" style="background:#555;padding:8px 16px;" onclick="window.print()">🖨️ Imprimir PDF</button>
+            <button class="btn" style="background:#b30000;margin-top:0;padding:8px 16px;" onclick="limpiarResultados()">Limpiar resultados</button>
+        </div>
+
+        <div class="results-container">
+            <!-- Informe Header (Visible only on print or screen as title) -->
+            <div class="result-section" style="border:none;padding:0;margin-bottom:0 !important;">
+                <h2 style="text-align:center;margin:0 0 4px 0;color:#3d4f2a;border-bottom:2px solid #b6d7a8;padding-bottom:2px;font-size:16px;">INFORME PSICOLÓGICO INTEGRAL</h2>
+                <div id="datosPostulante" style="margin-bottom:8px;font-size:0.95em;"></div>
+            </div>
+
+            <div class="result-grid result-grid-screen">
+                <!-- Columna 1 -->
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                    <div class="result-section">
+                        <h3>1. PERSONALIDAD (CBP-LRC)</h3>
+                        <div id="cbpResultados" style="font-size:0.9em;"></div>
+                        <div class="chart-container" style="margin-top:2px;"><canvas id="cbpChart"></canvas></div>
+                    </div>
+                   
+                    <div class="result-section">
+                        <h3>3. INTELIGENCIA EMOCIONAL (EQI-C)</h3>
+                        <div id="eqiResultados" style="font-size:0.9em;"></div>
+                        <div class="chart-container" style="margin-top:2px;"><canvas id="eqiChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Columna 2 -->
+                <div style="display:flex;flex-direction:column;gap:5px;">
+                     <div class="result-section">
+                        <h3>2. VALORES (VALANTI)</h3>
+                        <div id="valantiResultados" style="font-size:0.9em;"></div>
+                        <div class="chart-container" style="margin-top:2px;"><canvas id="valantiChart"></canvas></div>
+                    </div>
+
+                    <div class="result-section">
+                        <h3>4. TEST DE LA CASA</h3>
+                        <div id="casaResultados" style="font-size:0.95em;line-height:1.2;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px;text-align:center;font-size:0.8em;color:#777;border-top:1px solid #eee;padding-top:10px;">
+                Este informe es confidencial y para uso exclusivo del Departamento de Psicología.
+            </div>
+        </div>
+    </div>
+    <script>
+    // Cargar datos personales desde localStorage
+    function mostrarDatosPostulante(){
+        let datos = {};
+        try {
+            if(localStorage.getItem('datosGenerales')) {
+                datos = JSON.parse(localStorage.getItem('datosGenerales'));
+            }
+        } catch(e) { console.error("Error parsing datosGenerales", e); }
+
+        const campos = [
+            {label:'Apellidos', key:'apellidos'},
+            {label:'Nombres', key:'nombres'},
+            {label:'DNI', key:'dni'},
+            {label:'Edad', key:'edad'},
+            {label:'Sexo', key:'sexo'},
+            {label:'Código', key:'codigo_postulante'}
+        ];
+
+        // Format for compact display (grid style)
+        let html = '<div style="display:grid;grid-template-columns: repeat(3, 1fr); gap:4px; font-size:10px; border:1px solid #ccc; padding:4px; border-radius:4px; background:#f9f9f9;">';
+        
+        // Combine names if available
+        let nombreCompleto = (datos['apellidos'] || '') + ' ' + (datos['nombres'] || '');
+        if(!nombreCompleto.trim()) nombreCompleto = "No registrado";
+        
+        html += `<div style="grid-column: span 2;"><strong>Apellidos y Nombres:</strong> ${nombreCompleto}</div>`;
+        html += `<div><strong>DNI:</strong> ${datos['dni'] || '-'}</div>`;
+        html += `<div><strong>Edad:</strong> ${datos['edad'] || '-'}</div>`;
+        html += `<div><strong>Sexo:</strong> ${datos['sexo'] || '-'}</div>`;
+        html += `<div><strong>Cód. Postulante:</strong> ${datos['codigo_postulante'] || '-'}</div>`;
+        
+        html += '</div>';
+        document.getElementById('datosPostulante').innerHTML = html;
+    }
+
+    // Generic chart loader
+    function loadChart(id, storageKey) {
+        let chartDataStr = localStorage.getItem(storageKey);
+        if(chartDataStr) {
+            try {
+                let chartData = JSON.parse(chartDataStr);
+                
+                // Force responsive behaviors for print
+                if(chartData.options) {
+                    chartData.options.responsive = true;
+                    chartData.options.maintainAspectRatio = false;
+                    chartData.options.animation = false; // Disable animation for print
+                } else {
+                    chartData.options = { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        animation: false
+                    };
+                }
+
+                let ctx = document.getElementById(id).getContext('2d');
+                new Chart(ctx, chartData);
+                document.getElementById(id).parentElement.style.display = 'block';
+            } catch(e) { console.error("Error loading chart " + id, e); }
+        } else {
+             document.getElementById(id).parentElement.style.display = 'none';
+        }
+    }
+
+    // Cargar resultados
+    function cargarTodo() {
+        mostrarDatosPostulante();
+        
+        // CBP
+        document.getElementById('cbpResultados').innerHTML = localStorage.getItem('cbp_resultados') || '<p class="no-data">No se han registrado resultados.</p>';
+        loadChart('cbpChart', 'cbp_chart');
+
+        // EQI-C
+        document.getElementById('eqiResultados').innerHTML = localStorage.getItem('eqi_resultados') || '<p class="no-data">No se han registrado resultados.</p>';
+        // Correct key check from EQI-C.html (eqi_chart)
+        loadChart('eqiChart', 'eqi_chart');
+
+        // Valanti
+        document.getElementById('valantiResultados').innerHTML = localStorage.getItem('valanti_resultados') || '<p class="no-data">No se han registrado resultados.</p>';
+        loadChart('valantiChart', 'valanti_chart');
+
+        // Casa
+        document.getElementById('casaResultados').innerHTML = localStorage.getItem('casa_resultados') || '<p class="no-data">No se han registrado resultados.</p>';
+    }
+
+    window.addEventListener('DOMContentLoaded', cargarTodo);
+
+    function limpiarResultados() {
+        if(confirm("¿Estás seguro de borrar todos los resultados almacenados?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+    </script>
+</body>
+</html>

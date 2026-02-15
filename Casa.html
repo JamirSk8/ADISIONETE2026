@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de la Casa - Sistematización</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <button class="nav-link" onclick="window.location.href='AdmisionETE.html'">Admisión ETE</button>
+        <button class="nav-link" onclick="window.location.href='cbp_lrc_web.html'">CBP-LRC</button>
+        <button class="nav-link" onclick="window.location.href='EQI-C.html'">EQI-C</button>
+        <button class="nav-link" onclick="window.location.href='Valanti.html'">VALANTI</button>
+        <button class="nav-link active" onclick="window.location.href='Casa.html'">Test de la Casa</button>
+    </nav>
+    <div class="header-bar">
+        <span class="header-title">TEST DE LA CASA</span>
+    </div>
+    <div class="container">
+        <form id="casaForm" style="width:100%;max-width:700px;">
+            <!-- Datos generales se leen de localStorage desde AdmisionETE.html -->
+            <!-- Indicadores principales -->
+            <div class="indicador">
+                <label>Ubicación en la hoja:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="ubicacion" value="centrada"> Centrada</label>
+                    <label class="option-btn"><input type="radio" name="ubicacion" value="izquierda"> Desplazada a la izquierda</label>
+                    <label class="option-btn"><input type="radio" name="ubicacion" value="derecha"> Desplazada a la derecha</label>
+                    <label class="option-btn"><input type="radio" name="ubicacion" value="superior"> Parte superior</label>
+                    <label class="option-btn"><input type="radio" name="ubicacion" value="inferior"> Parte inferior</label>
+                </div>
+                <div class="significado" id="sig_ubicacion"></div>
+            </div>
+            <div class="indicador">
+                <label>Tamaño:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="tamano" value="pequeno"> Pequeño</label>
+                    <label class="option-btn"><input type="radio" name="tamano" value="proporcionado"> Proporcionado</label>
+                    <label class="option-btn"><input type="radio" name="tamano" value="muy_grande"> Muy grande</label>
+                </div>
+                <div class="significado" id="sig_tamano"></div>
+            </div>
+            <div class="indicador">
+                <label>Presión del trazo:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="presion" value="fuerte"> Fuerte</label>
+                    <label class="option-btn"><input type="radio" name="presion" value="debil"> Débil</label>
+                    <label class="option-btn"><input type="radio" name="presion" value="muy_fuerte"> Muy fuerte (marca hoja)</label>
+                </div>
+                <div class="significado" id="sig_presion"></div>
+            </div>
+            <div class="indicador">
+                <label>Tipo de línea:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="linea" value="temblorosa"> Temblorosa</label>
+                    <label class="option-btn"><input type="radio" name="linea" value="reforzada"> Reforzada</label>
+                    <label class="option-btn"><input type="radio" name="linea" value="recta"> Recta rígida</label>
+                </div>
+                <div class="significado" id="sig_linea"></div>
+            </div>
+            <div class="indicador">
+                <label>Techo:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="techo" value="muy_grande"> Muy grande</label>
+                    <label class="option-btn"><input type="radio" name="techo" value="muy_pequeno"> Muy pequeño</label>
+                    <label class="option-btn"><input type="radio" name="techo" value="sin_techo"> Sin techo</label>
+                </div>
+                <div class="significado" id="sig_techo"></div>
+            </div>
+            <div class="indicador">
+                <label>Puerta:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="puerta" value="sin_puerta"> Sin puerta</label>
+                    <label class="option-btn"><input type="radio" name="puerta" value="muy_pequena"> Muy pequeña</label>
+                    <label class="option-btn"><input type="radio" name="puerta" value="muy_grande"> Muy grande</label>
+                    <label class="option-btn"><input type="radio" name="puerta" value="abierta"> Abierta</label>
+                    <label class="option-btn"><input type="radio" name="puerta" value="cerrada_marcada"> Cerrada marcada</label>
+                </div>
+                <div class="significado" id="sig_puerta"></div>
+            </div>
+            <div class="indicador">
+                <label>Ventanas:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="ventanas" value="sin_ventanas"> Sin ventanas</label>
+                    <label class="option-btn"><input type="radio" name="ventanas" value="con_barrotes"> Con barrotes</label>
+                    <label class="option-btn"><input type="radio" name="ventanas" value="excesivas"> Excesivas</label>
+                </div>
+                <div class="significado" id="sig_ventanas"></div>
+            </div>
+            <div class="indicador">
+                <label>Chimenea:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="chimenea" value="con_humo"> Con humo</label>
+                    <label class="option-btn"><input type="radio" name="chimenea" value="sin_humo"> Sin humo</label>
+                </div>
+                <div class="significado" id="sig_chimenea"></div>
+            </div>
+            <div class="indicador">
+                <label>Base o suelo:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="base" value="sin_base"> Sin base</label>
+                    <label class="option-btn"><input type="radio" name="base" value="flotante"> Flotante</label>
+                </div>
+                <div class="significado" id="sig_base"></div>
+            </div>
+            <div class="indicador">
+                <label>Elementos agregados:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="checkbox" name="elementos" value="camino"> Camino</label>
+                    <label class="option-btn"><input type="checkbox" name="elementos" value="cercas"> Cercas</label>
+                    <label class="option-btn"><input type="checkbox" name="elementos" value="sol"> Sol</label>
+                    <label class="option-btn"><input type="checkbox" name="elementos" value="nubes"> Nubes densas</label>
+                </div>
+                <div class="significado" id="sig_elementos"></div>
+            </div>
+            <div class="indicador">
+                <label>Impresión general:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="radio" name="impresion" value="armonico"> Armónico</label>
+                    <label class="option-btn"><input type="radio" name="impresion" value="torpe"> Torpe</label>
+                    <label class="option-btn"><input type="radio" name="impresion" value="infantil"> Infantil</label>
+                    <label class="option-btn"><input type="radio" name="impresion" value="deforme"> Deforme</label>
+                </div>
+                <div class="significado" id="sig_impresion"></div>
+            </div>
+            <div class="indicador">
+                <label>Indicadores de conflicto:</label>
+                <div class="opciones">
+                    <label class="option-btn"><input type="checkbox" name="conflicto" value="sombreado"> Sombreado intenso</label>
+                    <label class="option-btn"><input type="checkbox" name="conflicto" value="borrados"> Borrados reiterados</label>
+                    <label class="option-btn"><input type="checkbox" name="conflicto" value="fragmentacion"> Fragmentación</label>
+                </div>
+                <div class="significado" id="sig_conflicto"></div>
+            </div>
+            <button type="submit" class="btn">Interpretar y guardar resultado</button>
+        </form>
+        <div id="resultado" class="resultado" style="display:none;"></div>
+    </div>
+    <script src="casa_test.js"></script>
+</body>
+</html>
